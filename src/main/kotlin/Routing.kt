@@ -1,15 +1,19 @@
 package com.camilo
 
+import com.fasterxml.jackson.databind.SerializationFeature
 import dev.langchain4j.data.segment.TextSegment
 import dev.langchain4j.model.embedding.onnx.allminilml6v2.AllMiniLmL6V2EmbeddingModel
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore
 import io.ktor.http.*
+import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.*
+import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+
 
 fun Application.configureRouting() {
 
@@ -31,8 +35,8 @@ fun Application.configureRouting() {
             call.respondText("Hello World!")
         }
         post("/question") {
-            val searchMovieQuery = call.receive<Map<String, String>>()
-            val queryEmbedding = embeddingModel.embed(searchMovieQuery.getValue("text")).content()
+            val searchMovieQuery = call.receive(Search::class)
+            val queryEmbedding = embeddingModel.embed(searchMovieQuery.text).content()
 
             val embeddingSearchRequest = EmbeddingSearchRequest.builder()
                 .queryEmbedding(queryEmbedding)
