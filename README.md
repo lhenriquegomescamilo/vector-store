@@ -40,3 +40,6 @@ curl -X POST --location "http://localhost:8080/question" \
         }'
 ```
 
+## Links
+* https://github.com/lhenriquegomescamilo/vector-space-model
+
