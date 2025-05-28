@@ -20,7 +20,7 @@ fun Application.configureRouting() {
     val embeddingModel = AllMiniLmL6V2EmbeddingModel()
     val embeddingStore = InMemoryEmbeddingStore<TextSegment>()
 
-    sequenceOf("I like football", "Te weather is good today")
+    sequenceOf("I like football", "Te weather is good today", "finally I both a house")
         .map(TextSegment::from)
         .onEach { println("creating segment for ${it.text()}") }
         .forEach { embeddingStore.add(embeddingModel.embed(it).content(), it) }
@@ -44,12 +44,12 @@ fun Application.configureRouting() {
                 .build()
 
             val matches = embeddingStore.search(embeddingSearchRequest).matches().first()
-
-
             call.respond(
                 mapOf(
                     "score" to matches.score(),
-                    "text" to matches.embedded().text()
+                    "text" to matches.embedded().text(),
+                    "vectors" to matches.embedding().vector(),
+                    "query_vectors" to queryEmbedding.vector(),
                 )
             )
         }
